@@ -6,7 +6,13 @@ class UserController extends Controller {
 
   async login() {
     const { ctx, service } = this;
-    ctx.response.body = await service.user.signUp();
+
+    ctx.cookies.set('Bear', {
+      signed: true,
+    });
+    ctx.response.body = ctx.request.body;
+    // ctx.response.body = await service.user.signUp();
+
   }
 
   async signUp() {
