@@ -23,11 +23,13 @@ module.exports = appInfo => {
       enable: false,
       ignoreJSON: true,
     },
-    domainWhiteList: [ 'http://localhost:3000' ],
+    domainWhiteList: [ '*' ],
   };
   config.cors = {
     origin: '*',
+    maxAge: 60 * 60 * 24 * 20,
     allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH',
+    credentials: true,
   };
 
   // add your user config here
