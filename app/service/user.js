@@ -2,25 +2,43 @@
 const Service = require('egg').Service;
 
 class UserService extends Service {
-  async signUp() {
+
+  async login() {
     const { ctx } = this;
+    const user = await this.app.mysql.get('users', { email: '1' });
     const res = {
       code: -1,
-      msg: '用户已存在'
+      msg: '用户已存在',
     };
-    // const queryResult = await ctx.model.User.findOne({
-    //   userName: signupMsg.userName,
-    // });
-    // if (queryResult) {
-    //   res.code = -1;
-    //   res.msg = '用户已存在';
-    // } else {
-    //   const result = await ctx.model.User.create(signupMsg);
-    //   res.data = result;
-    //   res.code = 1;
-    //   res.msg = '注册成功';
-    // }
-    return res;
+
+    return user;
+  }
+
+  async signUp() {
+    const { ctx } = this;
+
+    console.log(ctx.request.body);
+    const { firstName, lastName, email, password } = ctx.request.body;
+
+
+    const isUserRegistered = await this.app.mysql.get('users', { email });
+    if (isUserRegistered) {
+      return {
+        code: 10001,
+        msg: '用户已存在',
+        data: null,
+      };
+    }
+
+    const user = await this.app.mysql.insert('users', { firstName, lastName, email, password });
+    if (user) {
+      return {
+        code: 0,
+        msg: 'success',
+        data: null,
+      };
+    }
+    return null;
   }
 }
 

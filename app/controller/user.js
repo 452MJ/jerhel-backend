@@ -10,6 +10,8 @@ class UserController extends Controller {
     ctx.cookies.set('Bear', {
       signed: true,
     });
+    const res = await service.user.login();
+    console.log(res);
     ctx.response.body = ctx.request.body;
     // ctx.response.body = await service.user.signUp();
 
