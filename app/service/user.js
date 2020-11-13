@@ -1,17 +1,23 @@
 'use strict';
+
+
+const moment = require('moment');
 const Service = require('egg').Service;
 
 class UserService extends Service {
 
   async login() {
     const { ctx } = this;
-    const user = await this.app.mysql.get('users', { email: '1' });
-    const res = {
-      code: -1,
-      msg: '用户已存在',
-    };
+    const { email, password } = ctx.request.body;
+    const user = await this.app.mysql.get('users', { email, password });
+    if (user) {
+      return { code: 0, data: true };
+    }
 
-    return user;
+    return {
+      code: 0,
+      data: false,
+    };
   }
 
   async signUp() {
@@ -24,18 +30,17 @@ class UserService extends Service {
     const isUserRegistered = await this.app.mysql.get('users', { email });
     if (isUserRegistered) {
       return {
-        code: 10001,
-        msg: '用户已存在',
-        data: null,
+        code: 0,
+        msg: '用户已注册',
+        data: false,
       };
     }
+    const user = await this.app.mysql.insert('users', { first_name: firstName, last_name: lastName, email, password, create_at: moment().valueOf() });
 
-    const user = await this.app.mysql.insert('users', { firstName, lastName, email, password });
     if (user) {
       return {
         code: 0,
-        msg: 'success',
-        data: null,
+        data: true,
       };
     }
     return null;

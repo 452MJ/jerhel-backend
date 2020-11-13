@@ -11,8 +11,7 @@ class UserController extends Controller {
       signed: true,
     });
     const res = await service.user.login();
-    console.log(res);
-    ctx.response.body = ctx.request.body;
+    ctx.response.body = res;
     // ctx.response.body = await service.user.signUp();
 
   }
