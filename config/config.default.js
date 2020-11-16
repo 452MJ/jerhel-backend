@@ -60,6 +60,10 @@ module.exports = appInfo => {
     database: 'jerhel',
   };
 
+  config.jwt = {
+    secret: '123456',
+  };
+
   // add your user config here
   const userConfig = {
     // myAppName: 'egg',

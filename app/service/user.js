@@ -7,16 +7,45 @@ const Service = require('egg').Service;
 class UserService extends Service {
 
   async login() {
-    const { ctx } = this;
+    const { ctx, app } = this;
     const { email, password } = ctx.request.body;
     const user = await this.app.mysql.get('users', { email, password });
     if (user) {
-      return { code: 0, data: true };
+      const token = app.jwt.sign({
+        email: user.email,
+        password: user.password,
+      }, app.config.jwt.secret, {
+        // expiresIn: '1800s',
+      });
+
+      return { code: 0,
+        msg: '登录成功', data: {
+          token,
+        } };
     }
 
     return {
       code: 0,
+      msg: '账号或密码错误',
       data: false,
+    };
+  }
+
+  async userInfo() {
+    const { ctx, app } = this;
+    const token = ctx.request.headers.authorization.split(' ')[1];
+    const { email, password } = app.jwt.decode(token);
+    const user = await this.app.mysql.get('users', { email, password });
+    if (user) {
+      return { code: 0,
+        msg: 'success', data: user };
+
+    }
+
+    return {
+      code: 500,
+      msg: '服务器错误',
+      data: null,
     };
   }
 
