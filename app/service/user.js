@@ -18,17 +18,15 @@ class UserService extends Service {
         // expiresIn: '1800s',
       });
 
-      return { code: 0,
+      return {
+        code: 0,
         msg: '登录成功', data: {
           token,
-        } };
+        },
+      };
     }
 
-    return {
-      code: 0,
-      msg: '账号或密码错误',
-      data: false,
-    };
+    ctx.throw('账号或密码错误');
   }
 
   async userInfo() {
@@ -37,8 +35,10 @@ class UserService extends Service {
     const { email, password } = app.jwt.decode(token);
     const user = await this.app.mysql.get('users', { email, password });
     if (user) {
-      return { code: 0,
-        msg: 'success', data: user };
+      return {
+        code: 0,
+        msg: 'success', data: user,
+      };
 
     }
 
@@ -64,7 +64,13 @@ class UserService extends Service {
         data: false,
       };
     }
-    const user = await this.app.mysql.insert('users', { first_name: firstName, last_name: lastName, email, password, create_at: moment().valueOf() });
+    const user = await this.app.mysql.insert('users', {
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      password,
+      create_at: moment().valueOf(),
+    });
 
     if (user) {
       return {
