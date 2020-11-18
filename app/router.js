@@ -10,4 +10,6 @@ module.exports = app => {
   router.post('/signUp', controller.user.signUp);
 
   router.get('/user/info', jwt, controller.user.userInfo);
+
+  router.post('/contact/add', controller.contact.add);
 };

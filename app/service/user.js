@@ -52,7 +52,6 @@ class UserService extends Service {
   async signUp() {
     const { ctx } = this;
 
-    console.log(ctx.request.body);
     const { firstName, lastName, email, password } = ctx.request.body;
 
 
